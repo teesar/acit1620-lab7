@@ -52,6 +52,21 @@ function setup() {
      * assigned to the 'tries' variable and the game is restarted.
      * 
      */
+    getShowBtn().addEventListener('click', showCard);
+    getRestartBtn().addEventListener('click', play);
+    getContinueBtn().addEventListener('click', );
+    getCheckbox().addEventListener('change', toggleInputState);
+    getNumberInput().addEventListener('input', (event) => {
+        //1. check the input value, if none provided, do nothing
+
+        //2. restart the game
+    });
+
+    for (let tile of getTiles()) {
+        tile.addEventListener('click', (event) => {
+            alert(tile.alt);
+        })
+    }
     
 }
 
@@ -61,6 +76,11 @@ function deactivate() {
      * - Disable click events on the card tiles and dim
      * the selection panel
      */
+    for (let tile of getTiles()) {
+        tile.toggleAttribute('disabled', true);
+    }
+
+    getPanel().classList.toggle('dim', true);
 }
 
 function activate() {
@@ -73,6 +93,13 @@ function activate() {
      * - Restore the 'show' button (which might have been 
      * disabled in the previous round)to active state 
      */
+    for (let tile of getTiles()) {
+        tile.toggleAttribute('disabled', false);
+    }
+
+    getCheckbox().toggleAttribute('checked', false);
+    getContinueBtn().classList.toggle('hidden', true);
+    getShowBtn().toggleAttribute('disabled', false);
 }
 
 
@@ -86,16 +113,35 @@ function play() {
      * - Hide the 'show' and 'restart' buttons
      * - Clear the previous round's output
      */
+    setCard();
+
+    const tiles = getTiles(); // -> NodeList
+    const randomizedTiles = shuffle(Array.from(tiles)) // first turn nodelist into array
+    for (let i = 0; i < randomizedTiles.length; i++) {
+        randomizedTiles[i].parentElement.style.order = `${i}`;
+    }
+
+    tries = getTries();
+
+    activate();
+
+    getShowBtn().classList.toggle('hidden', true);
+    getRestartBtn().classList.toggle('hidden', true);
+
+    getOutput().querySelectorAll('span:not(:last-child)').forEach(el => el.textContent = '');
 }
 
 
 function pause() {
     /**
      * Called only if the player has more guesses to try. (tries > 1)
-     * - De-activate the selection panel
+     * - De-activate the selection panel and dim it
      * - Show the number of tries left
      * - Show the continue button
      */
+    deactivate();
+    getOutput().querySelector('span:last-child').textContent = `You have ${--tries} left`;
+    getContinueBtn().classList.toggle('hidden', false);
 }
 
 
@@ -107,6 +153,12 @@ function showResults() {
      * - Show the 'show' and 'restart' buttons
      * - Stop showing the number of tries left
      */
+    deactivate();
+    getContinueBtn().classList.toggle('hidden', true);
+    getShowBtn().classList.toggle('hidden', false);
+    getRestartBtn().classList.toggle('hidden', false);
+    getOutput().querySelector('span:last-child').textContent = '';
+
 }
 
 // Set up and start the game
