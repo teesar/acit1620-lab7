@@ -28,8 +28,6 @@ export function getCard() {
 export function getCardNode() {
     /**
      * Get answer card image node
-     const img = document.querySelector('.answer img');
-     return img;
      */
     return document.querySelector('.answer img');
 }
@@ -38,7 +36,7 @@ export function getCheckbox() {
     /**
      * Get checkbox node
      */
-    return document.querySelector('checkbox');
+    return document.querySelector('#tries-checkbox');
 }
 
 export function getContinueBtn() {
@@ -51,17 +49,15 @@ export function getContinueBtn() {
 export function getNumberInput() {
     /**
      * Get number input node
-     return document.querySelector('input[type="number"]');
      */
-    return document.querySelector('#num-tries');
+    return document.querySelector('input[type="number"]');
 }
 
 export function getOutput() {
     /**
      * Get output node
-     output instead of .result
      */
-    return document.querySelector('.result');
+    return document.querySelector('output');
 }
 
 export function getPanel() {
@@ -125,20 +121,26 @@ export function setCard() {
 
     // hide the card
     cardNode.classList.toggle('hidden', true);
+    
+    getCardNode().classList.remove('fade');
+    const correctcard = document.querySelector('.answer');
+    correctcard.classList.remove('flip');
 
-     // cancel the animation
 }
 
 export function showCard() {
     /**
      * Show the answer card and disable the 'show' button
-     * toggle 
      */
     getCardNode().classList.toggle('hidden', false);
-    getShowBtn().toggleAttribute('disabled', true)
+    getShowBtn().toggleAttribute('disabled', true);
 
     // animate the card
 
+    getCardNode().classList.add('fade');
+
+    const correctcard = document.querySelector('.answer');
+    correctcard.classList.add('flip');
 
 }
 
@@ -149,6 +151,6 @@ export function toggleInputState(e) {
      * The information is available in the event object passed to the
      * function at call time.
      */
-    getNumberInput().toggleAttribute('disabled', !e.target.checked)
+    getNumberInput().toggleAttribute('disabled', !e.target.checked);
 }
 

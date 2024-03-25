@@ -10,7 +10,6 @@
  * displayed, allowing the player to reveal the answer.
  */
 import {
-    
     getCard,
     getCheckbox,
     getContinueBtn,
@@ -52,19 +51,45 @@ function setup() {
      * assigned to the 'tries' variable and the game is restarted.
      * 
      */
+
     getShowBtn().addEventListener('click', showCard);
     getRestartBtn().addEventListener('click', play);
-    getContinueBtn().addEventListener('click', );
+    getContinueBtn().addEventListener('click', activate);
     getCheckbox().addEventListener('change', toggleInputState);
     getNumberInput().addEventListener('input', (event) => {
-        //1. check the input value, if none provided, do nothing
+        const inputValue = event.target.value;
+    
+        if (!inputValue.trim()) {
+            return;
+        } else {
+            play();
+            
 
-        //2. restart the game
+        }
+        
+        // 1. check the input value, if none provided, do nothing
+
+        // 2. restart a new round of game
     });
 
+
     for (let tile of getTiles()) {
-        tile.addEventListener('click', (event) => {
-            alert(tile.alt);
+        tile.addEventListener('click', (e) => {
+            const outputNodes = getOutput().querySelectorAll('span');
+    
+            outputNodes.item(0).innerHTML = `You selected the <b>${e.target.alt}</b>`;
+    
+            if (tile.alt === getCard()) {
+                outputNodes.item(1).textContent = 'You win!';
+                showResults();
+            } else {
+                outputNodes.item(1).textContent = 'Not quite!';
+                if (tries > 1) {
+                    pause();
+                } else {
+                    showResults();
+                }
+            }
         })
     }
     
@@ -96,6 +121,7 @@ function activate() {
     for (let tile of getTiles()) {
         tile.toggleAttribute('disabled', false);
     }
+    getPanel().classList.toggle('dim', false);
 
     getCheckbox().toggleAttribute('checked', false);
     getContinueBtn().classList.toggle('hidden', true);
@@ -116,7 +142,7 @@ function play() {
     setCard();
 
     const tiles = getTiles(); // -> NodeList
-    const randomizedTiles = shuffle(Array.from(tiles)) // first turn nodelist into array
+    const randomizedTiles = shuffle(Array.from(tiles)) // first turn NodeList into Array
     for (let i = 0; i < randomizedTiles.length; i++) {
         randomizedTiles[i].parentElement.style.order = `${i}`;
     }
@@ -158,7 +184,6 @@ function showResults() {
     getShowBtn().classList.toggle('hidden', false);
     getRestartBtn().classList.toggle('hidden', false);
     getOutput().querySelector('span:last-child').textContent = '';
-
 }
 
 // Set up and start the game
